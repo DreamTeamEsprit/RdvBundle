@@ -1,0 +1,516 @@
+{% extends "@User/layout.html.twig" %}
+
+{% block body %}
+    <section id="blogArchive">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="blog-breadcrumbs-area">
+                    <div class="container">
+                        <div class="blog-breadcrumbs-left">
+                            <h2>Espace Spécialiste</h2>
+                        </div>
+                        <div class="blog-breadcrumbs-right">
+                            <ol class="breadcrumb">
+                                <li>You are here</li>
+                                <li><a href="{{ path('index') }}">Home</a></li>
+                                <li class="active">Recherche</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="errorPage">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="error-page-area">
+
+                        {% for message in app.flashes('notice') %}
+                            <div class="alert alert-success alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>{{ message }}</strong>
+                            </div>
+                        {% endfor %}
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+
+
+                                <div class="panel panel-default">
+
+                                    <!-- /.panel-heading -->
+                                    <div class="panel-body">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#mesRdv" data-toggle="tab"><i
+                                                            class="fa fa-calendar"></i>
+                                                    Mes rendez vous</a>
+                                            </li>
+                                            <li><a href="#mesClients" data-toggle="tab"><i class="fa fa-users"></i> Mes
+                                                    clients</a>
+                                            </li>
+
+                                            <li><a href="#parametrerCalendrier" data-toggle="tab"><i
+                                                            class="fa fa-clock-o"></i>
+                                                    Paramétrer calendrier</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+
+
+                                        <!--Mes rendez-vous-->
+                                        <div class="tab-pane fade active in" id="mesRdv">
+                                            <div class="col-lg-12">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <b>Mes rendez-vous</b>
+                                                    </div>
+                                                    <!-- /.panel-heading -->
+                                                    <div class="panel-body">
+                                                        <div class="table-responsive">
+
+                                                            <table class="table table-striped">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Nom client</th>
+                                                                    <th>Date rendez-vous</th>
+                                                                    <th>Heure rendez-vous</th>
+                                                                    <th>Etat</th>
+                                                                    <th></th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for rdv in rdvs %}
+
+                                                                    <tr>
+                                                                        <td>{{ rdv.user.nom }} {{ rdv.user.prenom }}
+                                                                        </td>
+                                                                        <td>{{ rdv.date|date("m/d/Y") }}
+                                                                        </td>
+                                                                        <td>{{ rdv.heuredebut|date("H:i") }}
+                                                                            à {{ rdv.heurefin|date("H:i") }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {% if rdv.etat == "En Cours" %}
+
+                                                                                <span style="color : orange;">En cours <i
+                                                                                            class="fa fa-spinner fa-pulse"
+                                                                                            aria-hidden="true"></i><span
+                                                                                            class="sr-only">Loading...</span></span>
+
+                                                                            {% elseif rdv.etat == "Termine" %}
+
+                                                                                <span style="color : green;">Terminé <i
+                                                                                            class="fa fa-check"
+                                                                                            aria-hidden="true"></i></span>
+
+                                                                            {% else %}
+
+                                                                                <span style="color : red;">Annuler <i
+                                                                                            class="fa fa-times"
+                                                                                            aria-hidden="true"></i></span>
+
+                                                                            {% endif %}
+                                                                        </td>
+                                                                        <td>
+                                                                            {% if rdv.etat == "En Cours" %}
+
+                                                                            <a onclick="return confirm('Vous êtes sur d annuler ce rendez-vous ?')"
+                                                                               title="Annuler mon rendez-vous"
+
+                                                                               href="{{ path('rdv_annuler',{'idrdv':rdv.id }) }}"><i
+                                                                                        style="color: red;"
+                                                                                        class="fa fa-times"
+                                                                                        aria-hidden="true"></i></a>
+                                                                        </td>
+                                                                        {% endif %}
+                                                                    </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+                                                        <!-- /.table-responsive -->
+                                                    </div>
+                                                    <!-- /.panel-body -->
+                                                </div>
+                                                <!-- /.panel -->
+                                            </div>
+
+                                        </div>
+
+                                        <!--Mes clients-->
+                                        <div class="tab-pane fade" id="mesClients">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <b>Mes Clients</b>
+                                                        </div>
+                                                        <!-- /.panel-heading -->
+                                                        <div class="panel-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-striped">
+                                                                    <thead>
+                                                                    <tr>
+                                                                        <th>Adresse E-mail</th>
+                                                                        <th>Nom et Prénom</th>
+                                                                        <th>Numéro de téléphone</th>
+                                                                        <th>Adresse</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    {% for rdvs in rdvsg %}
+                                                                        <tr>
+                                                                            <td>{{ rdvs.user.email }}
+                                                                            </td>
+                                                                            <td>{{ rdvs.user.nom }} {{ rdvs.user.prenom }}
+                                                                            </td>
+                                                                            <td>{{ rdvs.user.numtel }}</td>
+                                                                            <td>{{ rdvs.user.adresse }}</td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+
+                                                            </div>
+                                                            <!-- /.table-responsive -->
+                                                        </div>
+                                                        <!-- /.panel-body -->
+                                                    </div>
+                                                    <!-- /.panel -->
+                                                </div>
+                                                <!-- /.col-lg-6 -->
+                                            </div>
+                                            <!-- /.row -->
+
+                                        </div>
+
+
+                                        <!--paramétrer calendrier-->
+                                        <div class="tab-pane fade" id="parametrerCalendrier">
+                                            <h4>Paramétrer calendrier</h4>
+                                            <div class="panel-body">
+                                                <!-- Nav tabs -->
+                                                <ul class="nav nav-tabs">
+                                                    <li><a href="#disponibilite" data-toggle="tab">Disponibilité</a>
+                                                    </li>
+                                                    <li><a href="#conge" data-toggle="tab">jours de congé</a>
+                                                    </li>
+                                                </ul>
+
+                                                <!-- Tab panes -->
+                                                <div class="tab-content">
+
+                                                    <!--Disponibilité-->
+
+                                                    <div class="tab-pane fade" id="disponibilite">
+                                                        <div class="form-group col-md-12">
+                                                            <form name="durefrm" method="POST"
+                                                                  action="{{ path('modifduree') }}" id="durefrm">
+                                                                <table class="gestion-horaires"
+                                                                       style="padding-top: 50px">
+                                                                    <tbody>
+                                                                    <tr class="day1">
+                                                                        <td class="textleft bold">
+                                                                            <label for="duree">La durée des rendez-vous
+                                                                                est {{ duree }} minutes</label>
+                                                                            <select class="form-control select"
+                                                                                    name="duree" id="duree">
+                                                                                <option value="15"> 15</option>
+                                                                                <option value="30"> 30</option>
+                                                                                <option value="45"> 45</option>
+                                                                                <option value="60"> 60</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <button type="submit" id="durebtn"
+                                                                                    name="durebtn"
+                                                                                    class="btn btn-success">Valider
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </form>
+
+
+                                                            <form name="calendrier" method="POST"
+                                                                  action="{{ path('ajoutTempsTravail') }}"
+                                                                  id="calendrier">
+                                                                <div class="col-md-6">
+                                                                    <h4>Horaire</h4>
+                                                                    <table class="gestion-horaires"
+                                                                           style="padding-top: 50px">
+                                                                        <tbody>
+                                                                        <tr class="day1">
+                                                                            <td class="textleft bold">
+                                                                                <select class="form-control select"
+                                                                                        name="jour">
+                                                                                    <option value="Lundi"> Lundi
+                                                                                    </option>
+                                                                                    <option value="Mardi"> Mardi
+                                                                                    </option>
+                                                                                    <option value="Mercredi"> Mercredi
+                                                                                    </option>
+                                                                                    <option value="Jeudi"> Jeudi
+                                                                                    </option>
+                                                                                    <option value="Vendredi"> Vendredi
+                                                                                    </option>
+                                                                                    <option value="Samedi"> Samedi
+                                                                                    </option>
+                                                                                    <option value="Dimanche"> Dimanche
+                                                                                    </option>
+                                                                                </select>
+                                                                            </td>
+
+                                                                            <td class="textright am text">de</td>
+                                                                            <td class="textright am">
+                                                                                <select class="form-control select"
+                                                                                        name="heureDebut">
+                                                                                    <option value="00:00:00"> 00:00
+                                                                                    </option>
+                                                                                    <option value="01:00:00"> 01:00
+                                                                                    </option>
+                                                                                    <option value="02:00:00"> 02:00
+                                                                                    </option>
+                                                                                    <option value="03:00:00"> 03:00
+                                                                                    </option>
+                                                                                    <option value="04:00:00"> 04:00
+                                                                                    </option>
+                                                                                    <option value="05:00:00"> 05:00
+                                                                                    </option>
+                                                                                    <option value="06:00:00"> 06:00
+                                                                                    </option>
+                                                                                    <option value="07:00:00"> 07:00
+                                                                                    </option>
+                                                                                    <option value="08:00:00"> 08:00
+                                                                                    </option>
+                                                                                    <option value="09:00:00"> 09:00
+                                                                                    </option>
+                                                                                    <option value="10:00:00"> 10:00
+                                                                                    </option>
+                                                                                    <option value="11:00:00"> 11:00
+                                                                                    </option>
+                                                                                    <option value="12:00:00"> 12:00
+                                                                                    </option>
+                                                                                    <option value="13:00:00"> 13:00
+                                                                                    </option>
+                                                                                    <option value="14:00:00"> 14:00
+                                                                                    </option>
+                                                                                    <option value="15:00:00"> 15:00
+                                                                                    </option>
+                                                                                    <option value="16:00:00"> 16:00
+                                                                                    </option>
+                                                                                    <option value="17:00:00"> 17:00
+                                                                                    </option>
+                                                                                    <option value="18:00:00"> 18:00
+                                                                                    </option>
+                                                                                    <option value="19:00:00"> 19:00
+                                                                                    </option>
+                                                                                    <option value="20:00:00"> 20:00
+                                                                                    </option>
+                                                                                    <option value="21:00:00"> 21:00
+                                                                                    </option>
+                                                                                    <option value="22:00:00"> 22:00
+                                                                                    </option>
+                                                                                    <option value="23:00:00"> 23:00
+                                                                                    </option>
+                                                                                </select>
+                                                                            </td>
+                                                                            <td class="textright am text"> à</td>
+                                                                            <td class="textright am middle-hours ">
+                                                                                <select class="form-control select"
+                                                                                        name="heureFin">
+                                                                                    <option value="00:00:00"> 00:00
+                                                                                    </option>
+                                                                                    <option value="01:00:00"> 01:00
+                                                                                    </option>
+                                                                                    <option value="02:00:00"> 02:00
+                                                                                    </option>
+                                                                                    <option value="03:00:00"> 03:00
+                                                                                    </option>
+                                                                                    <option value="04:00:00"> 04:00
+                                                                                    </option>
+                                                                                    <option value="05:00:00"> 05:00
+                                                                                    </option>
+                                                                                    <option value="06:00:00"> 06:00
+                                                                                    </option>
+                                                                                    <option value="07:00:00"> 07:00
+                                                                                    </option>
+                                                                                    <option value="08:00:00"> 08:00
+                                                                                    </option>
+                                                                                    <option value="09:00:00"> 09:00
+                                                                                    </option>
+                                                                                    <option value="10:00:00"> 10:00
+                                                                                    </option>
+                                                                                    <option value="11:00:00"> 11:00
+                                                                                    </option>
+                                                                                    <option value="12:00:00"> 12:00
+                                                                                    </option>
+                                                                                    <option value="13:00:00"> 13:00
+                                                                                    </option>
+                                                                                    <option value="14:00:00"> 14:00
+                                                                                    </option>
+                                                                                    <option value="15:00:00"> 15:00
+                                                                                    </option>
+                                                                                    <option value="16:00:00"> 16:00
+                                                                                    </option>
+                                                                                    <option value="17:00:00"> 17:00
+                                                                                    </option>
+                                                                                    <option value="18:00:00"> 18:00
+                                                                                    </option>
+                                                                                    <option value="19:00:00"> 19:00
+                                                                                    </option>
+                                                                                    <option value="20:00:00"> 20:00
+                                                                                    </option>
+                                                                                    <option value="21:00:00"> 21:00
+                                                                                    </option>
+                                                                                    <option value="22:00:00"> 22:00
+                                                                                    </option>
+                                                                                    <option value="23:00:00"> 23:00
+                                                                                    </option>
+                                                                                </select>
+                                                                            <td>
+                                                                                <button id="ajout" name="ajout"
+                                                                                        type="submit"
+                                                                                        class="btn btn-success">Ajouter
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+
+                                                            </form>
+                                                            <div class="col-md-6">
+                                                                <form name="modifcal" method="POST" action=""
+                                                                      id="modifcal">
+                                                                    <h4>Temps de travail</h4>
+                                                                    {% for temp in temps %}
+                                                                        <table class="gestion-horaires"
+                                                                               style="padding-top: 50px">
+                                                                            <tbody>
+                                                                            <tr>
+                                                                                <td class="textleft bold">
+                                                                                <td style="width: 150px"
+                                                                                    class="textleft bold">
+                                                                                    {{ temp.jour }}
+                                                                                </td>
+                                                                                </td>
+                                                                                <td class="textright am text">de</td>
+                                                                                <td class="textright am">
+                                                                                    <label>
+                                                                                        {{ temp.heuredebut|date("H:i") }}
+                                                                                    </label>
+                                                                                </td>
+                                                                                <td class="textright am text"> à</td>
+                                                                                <td class="textright am middle-hours ">
+                                                                                    <label>
+                                                                                        {{ temp.heurefin|date("H:i") }}
+                                                                                    </label>
+                                                                                <td>
+                                                                                    <a href="{{ path('suprimerTempsTravail',{'id':temp.id}) }}"
+                                                                                       id="suprim" name="suprim"><i
+                                                                                                class="fa fa-trash"
+                                                                                                aria-hidden="true"></i></a>
+                                                                                </td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    {% endfor %}
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- end Disponibilité -->
+
+                                                    <!--Jours de Congé-->
+                                                    <div class="tab-pane fade" id="conge">
+                                                        <h4>Ajouter un congé</h4>
+                                                        <div class="container">
+                                                            <form method="post" action="{{ path('ajoutConge') }}"
+                                                                  name="congefrm">
+                                                                <div class='col-md-5'>
+                                                                    <div class="form-group">
+                                                                        <div class="input-group">
+                                                                            <input type="date" class="form-control"
+                                                                                   id="dateDebut"
+                                                                                   name="dateDebut">
+                                                                            <div class="input-group-addon">
+                                                                                <span class="glyphicon glyphicon-th"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class='col-md-5'>
+                                                                    <div class="form-group">
+                                                                        <div class="input-group">
+                                                                            <input type="date" class="form-control"
+                                                                                   id="dateFin"
+                                                                                   name="dateFin">
+                                                                            <div class="input-group-addon">
+                                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="submit" id="ajoutConge" name="ajoutConge"
+                                                                        class="btn btn-success">Ajouter
+                                                                </button>
+                                                            </form>
+                                                            <div class='col-md-8'>
+                                                                <h4>Temps de travail</h4>
+                                                                <table class="gestion-horaires"
+                                                                       style="padding-top: 50px">
+                                                                    <tbody>
+
+                                                                    {% for conge in conges %}
+                                                                        <tr>
+
+                                                                            <td>de</td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    {{ conge.dateDebut|date }}
+                                                                                </label>
+                                                                            </td>
+                                                                            <td> à</td>
+                                                                            <td>
+                                                                                <label>
+                                                                                    {{ conge.dateDebut|date }}
+                                                                                </label>
+                                                                            <td>
+                                                                                <a href="{{ path('suprimerConge',{'id':conge.id}) }}"
+                                                                                   id="suprim" name="suprim"><i
+                                                                                            class="fa fa-trash"
+                                                                                            aria-hidden="true"></i></a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endfor %}
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.panel-body -->
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

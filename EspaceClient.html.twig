@@ -1,0 +1,338 @@
+{% extends "@User/layout.html.twig" %}
+
+{% block body %}
+    <section id="blogArchive">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="blog-breadcrumbs-area">
+                    <div class="container">
+                        <div class="blog-breadcrumbs-left">
+                            <h2>Espace Client</h2>
+                        </div>
+                        <div class="blog-breadcrumbs-right">
+                            <ol class="breadcrumb">
+                                <li>You are here</li>
+                                <li><a href="{{ path('index') }}">Home</a></li>
+                                <li class="active">Recherche</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="errorPage">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="error-page-area">
+
+
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel panel-default">
+                                        <!-- /.panel-heading -->
+                                        <div class="panel-body">
+                                            <!-- Nav tabs -->
+                                            <ul class="nav nav-tabs">
+                                                <li><a href="#" id="mesRdv" name="mesRdv"
+                                                       style="padding-right:100px;"><i
+                                                                class="glyphicon glyphicon-calendar" aria-hidden="true"><b>
+                                                                Mes
+                                                                Rendez-vous</b></i></a></li>
+                                                <li><a href="#" id="prof" name="prof" style="padding-right:100px;"><i
+                                                                class="glyphicon glyphicon-briefcase"
+                                                                aria-hidden="true"><b> Mes
+                                                                spécialistes</b></i></a></li>
+                                                <li><a href="#" id="suggProf" name="suggProf"
+                                                       style="padding-right:100px;"><i
+                                                                class="glyphicon glyphicon-bullhorn" aria-hidden="true"><b>
+                                                                Suggérer
+                                                                specialiste</b></i></a></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- /.panel-body -->
+                                    </div>
+                                </div>
+                                <!-- /.panel-heading -->
+                            </div>
+                            <!-- /.panel -->
+                        </div>
+
+                        <form name="mesRdvForm" method="POST" action="" id="mesRdvForm" style="padding-top:100px;">
+
+                            <div id="page-wrapper">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" style="font-size: 25px">
+                                                Mes Rendez-vous
+                                            </div>
+                                            <!-- /.panel-heading -->
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Heure</th>
+                                                            <th>Nom spécialiste</th>
+                                                            <th>spécialité</th>
+                                                            <th>Etat</th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for rdv in rdvs %}
+                                                            <tr>
+                                                                <td>{{ rdv.date|date("m/d/Y") }}</td>
+                                                                <td>{{ rdv.heuredebut|date("H:i") }}
+                                                                    à {{ rdv.heurefin|date("H:i") }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ rdv.calendrier.specialiste.user.nom }}
+                                                                    {{ rdv.calendrier.specialiste.user.prenom }}
+                                                                </td>
+
+                                                                <td>{{ rdv.calendrier.specialiste.service.nom }}
+                                                                </td>
+                                                                <td>
+                                                                    {% if rdv.etat == "En Cours" %}
+
+                                                                        <span style="color : orange;">En cours <i
+                                                                                    class="fa fa-spinner fa-pulse"
+                                                                                    aria-hidden="true"></i><span
+                                                                                    class="sr-only">Loading...</span></span>
+
+                                                                    {% elseif rdv.etat == "Termine" %}
+
+                                                                        <span style="color : green;">Terminé <i
+                                                                                    class="fa fa-check"
+                                                                                    aria-hidden="true"></i></span>
+
+                                                                    {% else %}
+
+                                                                        <span style="color : red;">Annuler <i
+                                                                                    class="fa fa-times"
+                                                                                    aria-hidden="true"></i></span>
+
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {% if rdv.etat == "En Cours" %}
+                                                                    <!-- Button trigger modal -->
+                                                                    <a style="color : blue" href="#" class="btnedit"
+                                                                       datardv="{{ rdv.id }}"
+
+                                                                       dataid=' {{ rdv.calendrier.specialiste.id }}'>
+                                                                        <i data-toggle="tooltip"
+                                                                           title="Changer le date ou l'heure de votre rendez-vous"
+                                                                           class="fa fa-pencil-square-o"
+                                                                           aria-hidden="true"></i></a>
+                                                                    <!-- Modal -->
+
+                                                                    <a onclick="return confirm('Vous êtes sur d annuler ce rendez-vous ?')"
+                                                                       title="Annuler mon rendez-vous"
+                                                                       href="{{ path('rdv_annuler',{'idrdv':rdv.id }) }}"><i
+                                                                                style="color: red;" class="fa fa-times"
+                                                                                aria-hidden="true"></i></a>
+                                                                </td>
+                                                                {% endif %}
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- /.table-responsive -->
+                                            </div>
+                                            <!-- /.panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+                                    </div>
+                                    <!-- /.col-lg-6 -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+                            <!-- /.panel-body -->
+                        </form>
+                        <div class="modal fade" id="editrdv" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        <span style="font-size: 20px" class="modal-title" id="myModalLabel"></span>
+                                    </div>
+                                    <div class="modal-body">
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i
+                                                    class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Retour
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--    suggestion Specialiste   -->
+                        <form data-toggle="validator" class="form-inline" name="suggForm" id="suggForm" action=""
+                              method="POST" role="form" style="display: none; padding-top:100px;">
+
+                            <center><h4><strong>Votre Spécialiste n'est pas sur Santi ? </strong></h4></center>
+                            <center><b>Faites lui découvrir la prise de rendez-vous en ligne.<br>
+                                    Nous contacterons votre Spécialiste de votre part !</b></center>
+                            <br>
+                            <br><br>
+
+                            <center>
+                                <div class="form-group has-feedback">
+                                    <input type="text" class="form-control" name="suggestion[nomprof]"
+                                           placeholder="Nom de votre Spécialiste" required>
+                                    <div class="help-block with-errors"></div>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                </div>
+
+                                <div class="form-group has-feedback">
+                                    <input type="number" name="suggestion[tel]" class="form-control"
+                                           placeholder="Téléphone de votre Specialiste" required>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-6 col-xs-12">
+                                        <select class="form-control select" name="suggestion[domaine]">
+                                            {% for departement in departements %}
+                                                <option value="{{ departement.id }}"> {{ departement.nom }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group has-feedback">
+                                    <input type="email" name="suggestion[email]"
+                                           placeholder="Email de votre Specialiste" class="form-control"
+                                           data-error="Adresse e-mail invalide!" required>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <br><br>
+                                <button type="submit" class="form-control btn btn-register" name="recommander"
+                                        id="recommander">Recommander votre spécialiste
+                                </button>
+                            </center>
+                        </form>
+
+                        <form name="mesprofForm" method="POST" action="" id="mesprofForm"
+                              style="display: none; padding-top:100px;">
+
+
+                            <div id="page-wrapper">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" style="font-size: 25px">
+                                                Mes specialistes
+                                            </div>
+                                            <!-- /.panel-heading -->
+                                            <div class="panel-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Nom</th>
+                                                            <th>Domaine / Spécialité</th>
+                                                            <th>Téléphone</th>
+                                                            <th>Adresse</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for rdv in rdvsg %}
+                                                            {{ rdv.calendrier.specialiste.user.nom }}
+
+                                                            <tr>
+                                                                <td>{{ rdv.calendrier.specialiste.user.nom }}
+                                                                    {{ rdv.calendrier.specialiste.user.prenom }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ rdv.calendrier.specialiste.service.departement.nom }}
+                                                                    /
+                                                                    {{ rdv.calendrier.specialiste.service.nom }}
+                                                                </td>
+                                                                <td>{{ rdv.calendrier.specialiste.user.numTel }}</td>
+                                                                <td>{{ rdv.calendrier.specialiste.user.adresse }}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- /.table-responsive -->
+                                            </div>
+                                            <!-- /.panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+                                    </div>
+                                    <!-- /.col-lg-6 -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+                            <!-- /.panel-body -->
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $(function () {
+            $('.btnedit').click(function () {
+
+                var btn = $(this);
+
+                var modal = $('#editrdv');
+                $.ajax({
+                    url: 'modifRDV',
+                    method: 'GET',
+                    jsonType: 'json',
+                    data: {idProf: btn.attr('dataid'), idrdv: btn.attr('datardv'),},
+                    success: function (rep) {
+                        modal.find('.modal-body').html(rep);
+                        modal.modal('show');
+                    }
+                })
+            });
+        });
+        //script de form ajax
+        $("#suggProf").click(function () {
+            $("#modif").hide();
+            $("#mesRdvForm").hide();
+            $("#mesprofForm").hide();
+            $("#suggForm").slideDown(500);
+        });
+        $("#param").click(function () {
+            $("#suggForm").hide();
+            $("#mesRdvForm").hide();
+            $("#mesprofForm").hide();
+            $("#modif").slideDown(500);
+        });
+        $("#mesRdv").click(function () {
+            $("#suggForm").hide();
+            $("#modif").hide();
+            $("#mesprofForm").hide();
+            $("#mesRdvForm").slideDown(500);
+        });
+        $("#prof").click(function () {
+            $("#mesRdvForm").hide();
+            $("#modif").hide();
+            $("#suggForm").hide();
+            $("#mesprofForm").slideDown(500);
+        });
+    </script>
+{% endblock %}
